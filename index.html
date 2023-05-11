@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/png" href="./favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@200&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
 
     <title>Idleness - Monitors the state of user idleness</title>
-    <script src="/idleness.js"></script>
+    <script src="./idleness.js"></script>
 
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <h1>Idleness</h1>
@@ -43,11 +43,11 @@
             </div>
             <div id="imgdisplay">
                 <span>
-                    <img src="/active.png" />
+                    <img src="./active.png" />
                     <h4>ACTIVE</h4>                    
                 </span>
                 <span>
-                    <img src="/inactive.png" />
+                    <img src="./inactive.png" />
                     <h4>IDLE</h4>                    
                 </span>
             </div>
@@ -55,9 +55,10 @@
     </main>
 
     <aside>
-        <p>Timeout is the time of inactivity in ms until idleness is reached. So, if you set it to 60000, or 1 minute, idleness will be reached after 1 minute of inactivity by the user.</p>
-        <p>Throttle is the time in ms the events being monitored for inactivity are checked. In other words, if set to 0, all events fired will be processed. If set to 200 there will be a space of 200ms between each event processed. The smaller this number is the more processing will be required when the user is active.</p>
-        <p>Use the Start and Stop buttons to begin and end the monitoring. When started the progressbar will advance or retreat according to the time elapsed since the last user activity until it eventually reaches the timeout. At this point idleness is reached.</p>
+        <p><b>Timeout</b> is the time of inactivity in ms until idleness is reached. So, if you set it to 60000, or 1 minute, idleness will be reached after 1 minute of inactivity by the user.</p>
+        <p><b>Throttle</b> is the time in ms the events being monitored for inactivity are checked. In other words, if set to 0, all events fired will be processed. If set to 200 there will be a space of 200ms between each event processed. The smaller this number is the more processing will be required when the user is active.</p>
+        <p>The <b>Use Event</b> button works like a toggle and enables or disables the event being fired when idle state changes.</p>
+        <p>Use the <b>Start</b> and <b>Stop</b> buttons to begin and end the monitoring. When started the progressbar will advance or retreat according to the time elapsed since the last user activity until it eventually reaches the timeout. At this point idleness is reached.</p>
     </aside>
 
     <script>
