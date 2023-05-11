@@ -5,10 +5,9 @@ class idleness {
         this.throttling = false;
         this.isRunning = false;
         this.startTimeStamp = 0;
-        this.setConfigs(cfgs);
+        this.setConfigs(cfgs || {});
         this.isIdle = true;
- 
-        this.eventNames = [ 'keydown', 'dragstart', 'contextmenu', 'mousedown', 'mousemove', 'scroll', 'touchmove', 'touchstart', 'wheel', 'visibilitychange' ]
+        this.eventNames = [ 'keydown', 'keypress', 'dragstart', 'contextmenu', 'mousedown', 'mousemove', 'scroll', 'touchmove', 'touchstart', 'wheel', 'visibilitychange' ]
         if (autoStart) { this.start(); }       
     }
 
@@ -34,6 +33,11 @@ class idleness {
             if (this.timeoutid) { clearTimeout(this.timeoutid); }
             this.isRunning = false;
         }
+    }
+    
+    setConfigs(cfgs) {
+        let defaults = { timeout: 900000, throttle: 250, idleFn: null, useEvent: true };
+        this.configs = Object.assign(defaults, this.configs || {}, cfgs);
     }
 
     #userActions() { 
@@ -67,12 +71,5 @@ class idleness {
         }
     }
 
-    #beginThrottle() {
-        setTimeout(() => this.throttling = false, this.configs.throttle);
-    }
-
-    setConfigs(cfgs) {
-        let defaults = { timeout: 900000, throttle: 250, idleFn: null, useEvent: true };
-        this.configs = Object.assign(defaults, cfgs);
-    }
+    #beginThrottle() { setTimeout(() => this.throttling = false, this.configs.throttle); }
 }

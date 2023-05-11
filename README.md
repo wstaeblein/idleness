@@ -50,6 +50,65 @@ idle.stop();
 ```
 
 
+## API
+
+### Constructor
+
+```javascript
+const idle = new idleness(configs, autostart);
+```
+
+Creates a new instance of the class. All parameters are optional.
+
+**configs:** object 
+
+| Property | Type | Description | Default |
+|----------|------|-------------|---------|
+| timeout | number | Time in ms until idle | 900000 |
+| throttle | number | Time in ms between checks for idleness | 250 |
+| idleFn | function | A function to be called when idle status change | null |
+| useEvent | boolean | If true an event named idle is dispatched then idle status change | true |
+
+**autostart:** boolean
+If true monitoring starts straight away. Otherwise only when the start method is invoked.
+
+
+### start method
+
+```javascript
+idle.start();
+```
+
+Starts monitoring idleness. Sets all listeners and timers.
+
+### stop method
+
+```javascript
+idle.stop();
+```
+Quits monitoring idleness. Removes all timers and listeners. Should be used before the page/component falls out of scope, but only if start was previously inkoked.
+
+### elapsed property (Readonly)
+
+```javascript
+let timePassed = idle.elapsed;
+```
+Returns the time in ms since the last activity was perceived. Once idleness is reached contains the amount of time since. 
+
+
+### setConfigs method
+
+```javascript
+idle.setConfigs({ 
+    timeout: 120000, 
+    throttle: 150, 
+    idleFn: otherHandleIdleFn
+});
+```
+Allows you to change settings on the fly without having to restart. All new values will be assumed as soon as this method executes. Takes the same object as the constructor. All properties are optional.
+
+
+
 ## About
 
 Although there are many such solutions around, I was looking for one that, despite simple and small, would allow the settings to change on the fly, would give me back the elapsed time and did not need a full package install. 
