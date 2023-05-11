@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@200&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
+
+    <title>Idleness - Monitors the state of user idleness</title>
+    <script src="/idleness.js"></script>
+
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Idleness</h1>
+    <p>Vanilla JS class to monitor the user's state of idleness</p>
+    <main>
+        <div>
+            <div>
+                <div class="ctrls">
+                    <div>
+                        <span>Timeout (in ms)</span>
+                        <input type="range" min="0" max="500000" step="500" value="0" id="timeout" oninput="setProperty('timeout')" />
+                        <b id="timeoutval">0</b>
+                    </div>
+                    <div>
+                        <span>Throttle (in ms)</span>
+                        <input type="range" min="0" max="1000" step="50" value="0" id="throttle" oninput="setProperty('throttle')" />
+                        <b id="throttleval">0</b>
+                    </div>                
+                </div>
+                <button id="chk" onclick="useEventHandler()">✔ Use Event</button>
+                <button onclick="start()">Start</button>
+                <button onclick="stop()">Stop</button>
+
+                <div id="prog" style="--prog: 0%">
+                    
+                </div>
+                
+                <span id="idle">IS IDLE</span>                
+            </div>
+            <div id="imgdisplay">
+                <span>
+                    <img src="/active.png" />
+                    <h4>ACTIVE</h4>                    
+                </span>
+                <span>
+                    <img src="/inactive.png" />
+                    <h4>IDLE</h4>                    
+                </span>
+            </div>
+        </div>
+    </main>
+
+    <aside>
+        <p>Timeout is the time of inactivity in ms until idleness is reached. So, if you set it to 60000, or 1 minute, idleness will be reached after 1 minute of inactivity by the user.</p>
+        <p>Throttle is the time in ms the events being monitored for inactivity are checked. In other words, if set to 0, all events fired will be processed. If set to 200 there will be a space of 200ms between each event processed. The smaller this number is the more processing will be required when the user is active.</p>
+        <p>Use the Start and Stop buttons to begin and end the monitoring. When started the progressbar will advance or retreat according to the time elapsed since the last user activity until it eventually reaches the timeout. At this point idleness is reached.</p>
+    </aside>
+
+    <script>
+        const configs = { timeout: 6000, throttle: 300, idleFn: handleIdle, useEvent: true };
+        const idle = new idleness(configs);
+        let tid = 0;
+        let useEvent = false;
+        let imgdisplay = document.getElementById('imgdisplay');
+
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.getElementById('timeout').value = configs.timeout;
+            document.getElementById('throttle').value = configs.throttle;
+            setProperty('timeout');
+            setProperty('throttle');
+
+            document.addEventListener('idle', (evt) => {
+                if (useEvent && evt.detail.idle) { setTimeout(() => alert('Event: USER IS IDLE!'), configs.throttle); }
+            });
+        });
+
+
+        function handleIdle(status) { console.log(status)
+            let imgdisp = document.getElementById('imgdisplay');
+            if (status) {
+                imgdisp.classList.remove('active');
+                imgdisp.classList.add('inactive');
+            } else {
+                imgdisp.classList.remove('inactive');
+                imgdisp.classList.add('active');
+            }
+        }
+
+        function useEventHandler() {
+            document.getElementById('chk').classList.toggle('sel');
+            useEvent = !useEvent;
+        }
+
+        function start() {
+            idle.start();
+            document.getElementById('imgdisplay').style.display = 'block';
+            tid = setInterval(() => {
+                let elapsed = Math.min(configs.timeout, idle.elapsed);
+                let per = Math.ceil((elapsed * 100) / configs.timeout);
+                setProgress(per);
+            }, 100);
+        }
+
+        function stop() {
+            idle.stop();
+            document.getElementById('imgdisplay').style.display = 'none';
+            clearInterval(tid);
+            setProgress(0);
+        }        
+
+        function setProgress(value) { 
+            document.getElementById('prog').style.setProperty('--prog', value + '%');
+        }
+
+        function setProperty(prop) {
+            let val;
+            switch(prop) {
+                case 'timeout':
+                    val = document.getElementById('timeout').value;
+                    document.getElementById('timeoutval').textContent = val;
+                    configs.timeout = +val;
+                    break;
+                case 'throttle':
+                    val = document.getElementById('throttle').value;
+                    document.getElementById('throttleval').textContent = val;
+                    configs.throttle = +val;
+                    break;
+            }
+            idle.setConfigs(configs);
+        }
+    </script>
+</body>
+</html>
