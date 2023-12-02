@@ -115,7 +115,7 @@ button:hover, button.sel {
     height: 100%;
     background-color: salmon;
     width: var(--prog);
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 #prog::after {
@@ -127,7 +127,7 @@ button:hover, button.sel {
     position: absolute;
     top: -2px;
     left: calc(var(--prog) - 2px);
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 .ctrls {

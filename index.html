@@ -22,7 +22,7 @@
                 <div class="ctrls">
                     <div>
                         <span>Timeout (in ms)</span>
-                        <input type="range" min="0" max="500000" step="500" value="0" id="timeout" oninput="setProperty('timeout')" />
+                        <input type="range" min="0" max="30000" step="500" value="0" id="timeout" oninput="setProperty('timeout')" />
                         <b id="timeoutval">0</b>
                     </div>
                     <div>
@@ -67,6 +67,7 @@
         let tid = 0;
         let useEvent = false;
         let imgdisplay = document.getElementById('imgdisplay');
+        let prog = document.getElementById('prog');
 
 
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -81,15 +82,15 @@
         });
 
 
-        function handleIdle(status) { console.log(status)
-            let imgdisp = document.getElementById('imgdisplay');
+        function handleIdle(status) { 
             if (status) {
-                imgdisp.classList.remove('active');
-                imgdisp.classList.add('inactive');
+                imgdisplay.classList.remove('active');
+                imgdisplay.classList.add('inactive');
             } else {
-                imgdisp.classList.remove('inactive');
-                imgdisp.classList.add('active');
+                imgdisplay.classList.remove('inactive');
+                imgdisplay.classList.add('active');
             }
+            console.log('handleIdle: ' + status)
         }
 
         function useEventHandler() {
@@ -98,24 +99,25 @@
         }
 
         function start() {
+            if (tid) { clearInterval(tid); }
             idle.start();
-            document.getElementById('imgdisplay').style.display = 'block';
+            imgdisplay.style.display = 'block';
             tid = setInterval(() => {
                 let elapsed = Math.min(configs.timeout, idle.elapsed);
-                let per = Math.ceil((elapsed * 100) / configs.timeout);
-                setProgress(per);
-            }, 100);
+                let per = Math.ceil((elapsed * 100) / configs.timeout); //console.log(elapsed, per + '%', idle.isIdle) 
+                if (!idle.isIdle) { setProgress(per); }
+            }, 50);
         }
 
         function stop() {
             idle.stop();
-            document.getElementById('imgdisplay').style.display = 'none';
+            imgdisplay.style.display = 'none';
             clearInterval(tid);
             setProgress(0);
         }        
 
         function setProgress(value) { 
-            document.getElementById('prog').style.setProperty('--prog', value + '%');
+            prog.style.setProperty('--prog', value + '%');
         }
 
         function setProperty(prop) {

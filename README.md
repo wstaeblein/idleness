@@ -96,6 +96,16 @@ let timePassed = idle.elapsed;
 Returns the time in ms since the last activity was perceived. Once idleness is reached contains the amount of time since. 
 
 
+### isIdle property (Readonly)
+
+```javascript
+if (idle.isIdle) {
+    ...
+}
+``` 
+Returns a boolean indicating whether idleness has been reached or not
+
+
 ### setConfigs method
 
 ```javascript

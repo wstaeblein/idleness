@@ -6,15 +6,16 @@ class idleness {
         this.isRunning = false;
         this.startTimeStamp = 0;
         this.setConfigs(cfgs || {});
-        this.isIdle = true;
+        this._isIdle = true;
         this.eventNames = [ 'keydown', 'keypress', 'dragstart', 'contextmenu', 'mousedown', 'mousemove', 'scroll', 'touchmove', 'touchstart', 'wheel', 'visibilitychange' ]
         if (autoStart) { this.start(); }       
     }
 
     get elapsed() { return this.isRunning ? new Date().getTime() - this.startTimeStamp : -1; }
+    get isIdle() { return this._isIdle; }
 
     start() {
-        let uactions = this.#userActions.bind(this)
+        let uactions = this.#userActions.bind(this);
         for (const event of this.eventNames) {
             document.addEventListener(event, uactions, { passive: true });
         }
@@ -41,11 +42,10 @@ class idleness {
     }
 
     #userActions() { 
-        if (!this.isRunning) { return; }
-        if (this.configs.throttle && this.throttling) { return; }
+        if (!this.isRunning || (this.configs.throttle && this.throttling)) { return; }
 
-        if (this.isIdle) { this.#response(false); }
-        this.isIdle = false;
+        if (this._isIdle) { this.#response(false); }
+        this._isIdle = false;
         this.startTimeStamp = new Date().getTime();
 
         if (this.timeoutid) { clearTimeout(this.timeoutid); }
@@ -53,7 +53,7 @@ class idleness {
 
         this.timeoutid = setTimeout(function() {
             self.#response.bind(self, true)();
-            self.isIdle = true;
+            self._isIdle = true;
             self.startTimeStamp = new Date().getTime();
         }, self.configs.timeout);
 
